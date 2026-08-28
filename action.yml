@@ -77,9 +77,8 @@ inputs:
     required: false
     default: github-actions[bot]
   committer-email:
-    description: Email used for the cherry-pick committer. Match your signing key's verified email when signing.
+    description: Email used for the cherry-pick committer. Match your signing key's verified email when signing. Defaults to the bot noreply address on the current host.
     required: false
-    default: github-actions[bot]@users.noreply.github.com
   gpg-private-key:
     description: ASCII-armored GPG private key. When set, cherry-picked commits are GPG-signed.
     required: false

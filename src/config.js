@@ -28,7 +28,9 @@ function readConfig() {
       name: core.getInput("committer-name") || "github-actions[bot]",
       email:
         core.getInput("committer-email") ||
-        "github-actions[bot]@users.noreply.github.com",
+        `github-actions[bot]@users.noreply.${
+          new URL(process.env.GITHUB_SERVER_URL || "https://github.com").host
+        }`,
     },
     signing: {
       gpgPrivateKey: core.getInput("gpg-private-key"),

@@ -1,0 +1,95 @@
+name: GitHub backport
+description: Opens backport PRs against long-running branches and gates the original PR until they are mergeable.
+author: nicklegan
+
+branding:
+  icon: git-branch
+  color: purple
+
+inputs:
+  app-id:
+    description: GitHub App ID used to derive an installation token.
+    required: true
+  private-key:
+    description: GitHub App private key (PEM) used to derive an installation token.
+    required: true
+  backport-branches:
+    description: Allowed set of backport branches, one per line. The PR template selects a subset of these.
+    required: true
+  check-name:
+    description: Name of the forward gate check reported on the original PR (green when all backports are mergeable).
+    required: false
+    default: backports-ready
+  reverse-check-name:
+    description: Name of the reverse gate check reported on each backport PR (green when the original PR is mergeable).
+    required: false
+    default: original-ready
+  cherry-picking:
+    description: 'How to apply the PR''s changes: auto (squash only when squash is the repo''s sole merge method), individual (replay each commit), or squash (one combined commit).'
+    required: false
+    default: auto
+  label-prefix:
+    description: Prefix for the backport target labels. A label <prefix><branch> selects that branch.
+    required: false
+    default: 'backport:'
+  delete-on-removal:
+    description: When a backport label is removed, also delete the backport branch (default closes the PR but keeps the branch).
+    required: false
+    default: 'false'
+  close-backports-on-abandon:
+    description: When the original PR is closed without merging, close its backport PRs too (branches follow delete-on-removal). Merged PRs are unaffected.
+    required: false
+    default: 'true'
+  copy-labels:
+    description: Keep the original PR's labels copied onto the backport PR (additive, re-synced on every run).
+    required: false
+    default: 'false'
+  copy-milestone:
+    description: Keep the original PR's milestone copied onto the backport PR (re-synced on every run).
+    required: false
+    default: 'false'
+  copy-assignees:
+    description: Keep the original PR's assignees copied onto the backport PR (additive, re-synced on every run).
+    required: false
+    default: 'false'
+  copy-reviewers:
+    description: Keep the original PR's requested reviewers copied onto the backport PR (additive, re-synced on every run).
+    required: false
+    default: 'false'
+  auto-merge:
+    description: Once the original PR is merged, merge each backport PR automatically when its checks pass. Requires 'Allow auto-merge' enabled on the repository.
+    required: false
+    default: 'false'
+  auto-merge-method:
+    description: 'Merge method used by auto-merge: merge, squash, or rebase.'
+    required: false
+    default: merge
+  respect-required-only:
+    description: Only treat branch-protection/ruleset required checks as must-pass in readiness (ignore advisory checks).
+    required: false
+    default: 'false'
+  require-conversation-resolution:
+    description: Treat unresolved review conversations as blocking. Set false if your branches don't require conversation resolution.
+    required: false
+    default: 'true'
+  committer-name:
+    description: Name used for the cherry-pick committer. Match your signing key's identity when signing.
+    required: false
+    default: github-actions[bot]
+  committer-email:
+    description: Email used for the cherry-pick committer. Match your signing key's verified email when signing.
+    required: false
+    default: github-actions[bot]@users.noreply.github.com
+  gpg-private-key:
+    description: ASCII-armored GPG private key. When set, cherry-picked commits are GPG-signed.
+    required: false
+  gpg-passphrase:
+    description: Passphrase for the GPG private key, if it has one.
+    required: false
+  ssh-signing-key:
+    description: SSH private key for SSH commit signing. Used only when gpg-private-key is not set.
+    required: false
+
+runs:
+  using: node24
+  main: dist/index.js

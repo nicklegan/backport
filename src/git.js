@@ -19,7 +19,8 @@ async function gitTry(args) {
 // credential, and optional commit signing. Called once per run.
 async function configureRepo({ core, token, owner, repo, committer, signing }) {
   core.setSecret(token);
-  const remote = `https://x-access-token:${token}@github.com/${owner}/${repo}.git`;
+  const host = new URL(process.env.GITHUB_SERVER_URL || "https://github.com").host;
+  const remote = `https://x-access-token:${token}@${host}/${owner}/${repo}.git`;
 
   await git(["config", "user.name", committer.name]);
   await git(["config", "user.email", committer.email]);

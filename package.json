@@ -1,6 +1,6 @@
 {
   "name": "backport",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Opens backport PRs against long-running branches and gates the original PR until they are mergeable.",
   "author": {
     "name": "GitHub Expert Services",
